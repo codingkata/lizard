@@ -1,0 +1,21 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pip_conf_index_global"
+
+[packages]
+lizard = {editable = true, path = "."}
+mock = "*"
+coverage = "*"
+pygments = "*"
+nose = "*"
+pycodestyle = "*"
+pylint = "*"
+pytest = "*"
+twine = "*"
+jinja2 = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"
