@@ -5,17 +5,14 @@ import sys
 
 def get_full_commit_list(repo_path, branch):
     try:
-        output = subprocess.check_output(['git', 'log', '--date-order','--reverse','--format=%H %cI', branch], cwd=repo_path)
-        print(output)
+        commits = subprocess.check_output(['git', 'log', '--date-order','--reverse','--format=%H %cI', branch], cwd=repo_path,timeout=300)
+        commits = commits.decode('utf-8').strip().split('\n')
     except subprocess.CalledProcessError as e:
         print(e)
         exit(1)
     except OSError as e:
         print(e)
         exit(1)
-
-    commits = commits.decode('utf-8').strip().split('\n')
-
     result = []
     for commit in commits:
         parts = commit.split(' ')
@@ -50,15 +47,13 @@ def get_commit_list(repo_path, branch,steplength):
 
 def checkout_commit(repo_path, commit_id):
     full_commit_id = subprocess.check_output(
-        ['git', 'rev-parse', commit_id], cwd=repo_path).decode().strip()
+        ['git', 'rev-parse', commit_id], cwd=repo_path,timeout=300).decode().strip()
     try:
         output=subprocess.check_output(
-        ['git', 'checkout', '-f', full_commit_id], cwd=repo_path)
-        print(output)
+        ['git', 'checkout', '-f', commit_id], cwd=repo_path,timeout=300)
     except subprocess.CalledProcessError as e:
         print(e)
         exit(1)
     except OSError as e:
         print(e)
         exit(1)
-

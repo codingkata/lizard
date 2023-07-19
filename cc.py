@@ -24,11 +24,11 @@ def _sum(all_fileinfos, scheme):
       for fun in module_info.function_list:
         try:
           funcresult = [getattr(fun, item['value']) for item in scheme.items if item['caption']]
+          # print(funcresult)
           nloc += funcresult[0]
           _calc_cc(cc,funcresult[1])
         except UnicodeEncodeError:
           print("Found ill-formatted unicode function name.")
-    #print(nloc,cc, end="\r")
   return (nloc,cc)
 
 def exceedance_rate(options,schema):
@@ -39,8 +39,12 @@ def exceedance_rate(options,schema):
     options.extensions,
     options.languages)
   (nloc,cc)= _sum(result, schema)
-  results = [ round(c*1000/nloc, 2) for c in cc]
-  results.insert(0,nloc)
+  if(nloc > 0):
+    results = [ round(c*1000/nloc, 2) for c in cc]
+    results.insert(0,nloc)
+  else:
+    # 目录中没有代码
+    results = [0 for i in range(7)]
   return results # [nloc,c5,c10,c15,c20,c25,c30]
 
 def preparing(argv):
