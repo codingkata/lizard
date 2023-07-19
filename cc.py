@@ -4,6 +4,7 @@ import sys
 import os
 from lizard import FileAnalyzer,get_extensions,parse_args,OutputScheme,print_result,analyze
 from lizard import AllResult, silent_printer,open_output_file
+from gitop.gitop import get_commit_list,checkout_commit
 
 
 analyze_file = FileAnalyzer(get_extensions([]))  # pylint: disable=C0103
@@ -13,7 +14,7 @@ def _calc_cc(cc,cnn):
     exceed = cnn - 5*(i+1)
     cc[i]+=(exceed if exceed > 0 else 0)
 
-def sum(all_fileinfos, scheme):
+def _sum(all_fileinfos, scheme):
   saved_fileinfos = []
   nloc = 0
   cc=[0,0,0,0,0,0]
@@ -36,7 +37,7 @@ def exceedance_rate(options,schema):
     options.working_threads,
     options.extensions,
     options.languages)
-  (nloc,cc)= sum(result, schema)
+  (nloc,cc)= _sum(result, schema)
   results = [ round(c*1000/nloc, 2) for c in cc]
   results.insert(0,nloc)
   return results # [nloc,c5,c10,c15,c20,c25,c30]
@@ -53,6 +54,17 @@ def preparing(argv):
     options.paths = auto_read(options.input_file).splitlines()
   return (options,schema,printer)
 
+
+def counting_repo(options,schema):
+  commitlist = get_commit_list(options.paths[0],'master',options.interval)
+  results =[]
+  print(len(commitlist))
+  for commit in commitlist:
+    checkout_commit(options.paths[0],commit["commit_id"])
+    ret = exceedance_rate(options,schema)
+    ret.insert(0,commit["commit_id"])
+    results.append(ret)
+  return results
 def main(argv=None):
   original_stdout = sys.stdout
   (options,schema,printer) = preparing(argv)
@@ -61,8 +73,8 @@ def main(argv=None):
   if options.output_file:
     output_file = open_output_file(options.output_file)
     sys.stdout = output_file
+  print(counting_repo(options,schema))
 
-  print(exceedance_rate(options,schema))
   # 关闭输出文件
   if output_file:
     sys.stdout = original_stdout

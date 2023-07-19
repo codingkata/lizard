@@ -241,6 +241,12 @@ def arg_parser(prog=None):
                         dest="whitelist",
                         default=DEFAULT_WHITELIST)
 
+    parser.add_argument("-I", "--interval",
+                        help='''how many commits you want to count for CC''',
+                        type=int,
+                        dest="interval",
+                        default=1)
+
     parser.usage = '''lizard [options] [PATH or FILE] [PATH] ...'''
     parser.description = __doc__
     return parser
