@@ -27,7 +27,7 @@ time,rev,nloc,C5,C10,C15,C20,C25,C30
 """
 
 if len(sys.argv) < 3:
-    print("Usage: python cctocurve.py <input_file> <interval>")
+    print("Usage: python3 cctocurve.py <input_file> <interval>")
     print("The output is a png file with same name of <input_file>.")
     sys.exit(-1)
 
@@ -63,5 +63,5 @@ plt.ylabel('值')
 plt.legend()
 plt.gcf().autofmt_xdate()
 
-outputfile = os.path.basename(filename) + ".png"
+outputfile = os.path.basename(input_file.split(".")[0]) + ".png"
 plt.savefig(outputfile)

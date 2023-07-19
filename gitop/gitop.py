@@ -4,7 +4,16 @@ from dateutil import parser
 import sys
 
 def get_full_commit_list(repo_path, branch):
-    commits = subprocess.check_output(['git', 'log', '--date-order','--reverse','--format=%H %cI', 'master'], cwd=repo_path)
+    try:
+        output = subprocess.check_output(['git', 'log', '--date-order','--reverse','--format=%H %cI', branch], cwd=repo_path)
+        print(output)
+    except subprocess.CalledProcessError as e:
+        print(e)
+        exit(1)
+    except OSError as e:
+        print(e)
+        exit(1)
+
     commits = commits.decode('utf-8').strip().split('\n')
 
     result = []
@@ -18,7 +27,7 @@ def get_full_commit_list(repo_path, branch):
 
         commit_hash = parts[0]
         result.append({'commit_date': commit_date, 'commit_id': commit_hash})
-    #print(f' Total number of commits: {len(result)}')
+    print(f' Total number of commits: {len(result)}')
     return result
 
 def _take_elements_in_total(lst,steplength):
@@ -34,14 +43,22 @@ def _take_elements_in_total(lst,steplength):
 def get_commit_list(repo_path, branch,steplength):
     full_list=get_full_commit_list(repo_path, branch)
     ret = _take_elements_in_total(full_list,steplength)
-    #print(f' Interval of commits : {steplength}')
-    #print(f' Number of commits picked: {len(ret)}')
+    print(f' Interval of commits : {steplength}')
+    print(f' Number of commits picked: {len(ret)}')
     return ret
 
 
 def checkout_commit(repo_path, commit_id):
     full_commit_id = subprocess.check_output(
         ['git', 'rev-parse', commit_id], cwd=repo_path).decode().strip()
-
-    subprocess.check_output(
+    try:
+        output=subprocess.check_output(
         ['git', 'checkout', '-f', full_commit_id], cwd=repo_path)
+        print(output)
+    except subprocess.CalledProcessError as e:
+        print(e)
+        exit(1)
+    except OSError as e:
+        print(e)
+        exit(1)
+

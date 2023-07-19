@@ -58,6 +58,7 @@ def preparing(argv):
 
 def counting_repo(options,schema):
   commitlist = get_commit_list(options.paths[0],options.branch,options.interval)
+  print(len(commitlist))
   results =[]
   for commit in commitlist:
     checkout_commit(options.paths[0],commit["commit_id"])
