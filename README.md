@@ -27,3 +27,13 @@ $ python3 cctocurve.py <your outputfile> <time interval>
 注意：确保输入文件格式如上面所示，输出为当前目录下的 一个 PNG 文件，它的 basename 与输入文件相同。
 
 
+## 生成一个圈复杂度与函数个数的反比例曲线图片
+
+
+```
+$ python3 cc.py -l java -x "**/test/*" --skewed <the local folder for your repo>
+```
+
+输出的文件名为： cc_distribution.png
+
+

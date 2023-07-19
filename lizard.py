@@ -251,7 +251,7 @@ def arg_parser(prog=None):
                         type=str,
                         dest="branch",
                         default="master")
-    parser.add_argument("--bell",
+    parser.add_argument("--skewed",
                         help='''Generate a Skewed curve to show cc is Skewed distribution.''',
                         action='store_true')
 

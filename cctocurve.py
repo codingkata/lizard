@@ -35,16 +35,13 @@ input_file = sys.argv[1]
 interval = int(sys.argv[2])
 
 df = pd.read_csv(input_file, parse_dates=['time'], date_parser=pd.to_datetime)
-#df = pd.read_csv(input_file)
-#df['time'] = pd.to_datetime(df['time'], format='%Y-%m-%d %H:%M:%S')
-
-#df = pd.read_csv(input_file, parse_dates=['time'],date_format='%Y-%m-%d %H:%M:%S')
 
 # 转换时间列为datetime格式
 df['time'] = pd.to_datetime(df['time'])
 
-# 绘制图像
-plt.figure()
+# 绘制图像,设置为 10 x 6 英寸
+plt.figure(figsize=(10, 6))
+
 plt.plot(df['time'], df['C5'], label='C5')
 plt.plot(df['time'], df['C10'], label='C10')
 plt.plot(df['time'], df['C15'], label='C15')
@@ -64,4 +61,5 @@ plt.legend()
 plt.gcf().autofmt_xdate()
 
 outputfile = os.path.basename(input_file.split(".")[0]) + ".png"
-plt.savefig(outputfile)
+# 设置dpi来控制图像质量,一般100-300 dpi就足够了
+plt.savefig(outputfile, dpi=300)

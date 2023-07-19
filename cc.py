@@ -5,6 +5,7 @@ import os
 from lizard import FileAnalyzer,get_extensions,parse_args,OutputScheme,print_result,analyze
 from lizard import AllResult, silent_printer,open_output_file
 from gitop.gitop import get_commit_list,checkout_commit
+from pic_gen.drawpolt import draw_skewed_curve
 
 
 
@@ -30,6 +31,29 @@ def _sum(all_fileinfos, scheme):
         except UnicodeEncodeError:
           print("Found ill-formatted unicode function name.")
   return (nloc,cc)
+
+def cc_distribution(options,schema):
+  result = analyze(
+    options.paths,
+    options.exclude,
+    options.working_threads,
+    options.extensions,
+    options.languages)
+  counts = {}
+  for module_info in result:
+    if module_info:
+      for fun in module_info.function_list:
+        try:
+          funcresult = [getattr(fun, item['value']) for item in schema.items if item['caption']]
+          print(','.join(str(num) for num in funcresult[:5]),end='\r')
+          if funcresult[1] not in counts:
+            counts[funcresult[1]] = 1
+          else:
+            counts[funcresult[1]] += 1
+        except UnicodeEncodeError:
+          print("Found ill-formatted unicode function name.")
+  return counts
+
 
 def exceedance_rate(options,schema):
   result = analyze(
@@ -83,6 +107,10 @@ def main(argv=None):
   (options,schema,printer) = preparing(argv)
   # 打开输出文件
   output_file = None
+  if options.skewed:
+    counts = cc_distribution(options,schema)
+    draw_skewed_curve(counts)
+    return
   if options.output_file:
     output_file = open_output_file(options.output_file)
     sys.stdout = output_file
