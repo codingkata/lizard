@@ -56,13 +56,14 @@ def preparing(argv):
 
 
 def counting_repo(options,schema):
-  commitlist = get_commit_list(options.paths[0],'master',options.interval)
+  commitlist = get_commit_list(options.paths[0],options.branch,options.interval)
   results =[]
   print(len(commitlist))
   for commit in commitlist:
     checkout_commit(options.paths[0],commit["commit_id"])
     ret = exceedance_rate(options,schema)
     ret.insert(0,commit["commit_id"])
+    ret.insert(0,commit["commit_date"])
     results.append(ret)
   return results
 def main(argv=None):

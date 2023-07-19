@@ -246,7 +246,11 @@ def arg_parser(prog=None):
                         type=int,
                         dest="interval",
                         default=1)
-
+    parser.add_argument("-B", "--branch",
+                        help='''which branch do you want to count for CC. The default is "master".''',
+                        type=str,
+                        dest="branch",
+                        default="master")
     parser.usage = '''lizard [options] [PATH or FILE] [PATH] ...'''
     parser.description = __doc__
     return parser

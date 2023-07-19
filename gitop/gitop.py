@@ -4,7 +4,7 @@ from dateutil import parser
 import sys
 
 def get_full_commit_list(repo_path, branch):
-    commits = subprocess.check_output(['git', 'log', '--format=%H %cI', 'master'], cwd=repo_path)
+    commits = subprocess.check_output(['git', 'log', '--date-order','--reverse','--format=%H %cI', 'master'], cwd=repo_path)
     commits = commits.decode('utf-8').strip().split('\n')
 
     result = []
@@ -21,11 +21,15 @@ def get_full_commit_list(repo_path, branch):
     print(len(result))
     return result
 
-def _take_elements_in_total(lst,step):
-    if(len(lst)<=step):
-        return lst
+def _take_elements_in_total(lst,steplength):
+    if(len(lst)<=steplength):
+        return [lst[-1]]
     else:
-        return lst[::step]
+        result = lst[::steplength]
+        # 加入提交时间最近的一个 commit id
+        if result[-1]['commit_id'] != lst[-1]['commit_id']:
+            result.append(lst[-1])
+        return result
 
 def get_commit_list(repo_path, branch,size):
     full_list=get_full_commit_list(repo_path, branch)
