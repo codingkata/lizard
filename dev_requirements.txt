@@ -9,3 +9,5 @@ pytest
 twine
 jinja2
 python-dateutil
+pandas
+matplotlib

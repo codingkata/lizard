@@ -7,6 +7,7 @@ from lizard import AllResult, silent_printer,open_output_file
 from gitop.gitop import get_commit_list,checkout_commit
 
 
+
 analyze_file = FileAnalyzer(get_extensions([]))  # pylint: disable=C0103
 
 def _calc_cc(cc,cnn):
@@ -58,7 +59,6 @@ def preparing(argv):
 def counting_repo(options,schema):
   commitlist = get_commit_list(options.paths[0],options.branch,options.interval)
   results =[]
-  print(len(commitlist))
   for commit in commitlist:
     checkout_commit(options.paths[0],commit["commit_id"])
     ret = exceedance_rate(options,schema)
@@ -66,6 +66,13 @@ def counting_repo(options,schema):
     ret.insert(0,commit["commit_date"])
     results.append(ret)
   return results
+
+def generate_report(lst):
+    print('time,rev,nloc,C5,C10,C15,C20,C25,C30')
+    for sub_list in lst:
+      line = ','.join(str(x) for x in sub_list)
+      print(line)
+
 def main(argv=None):
   original_stdout = sys.stdout
   (options,schema,printer) = preparing(argv)
@@ -74,8 +81,8 @@ def main(argv=None):
   if options.output_file:
     output_file = open_output_file(options.output_file)
     sys.stdout = output_file
-  print(counting_repo(options,schema))
-
+  result = counting_repo(options,schema)
+  generate_report(result)
   # 关闭输出文件
   if output_file:
     sys.stdout = original_stdout

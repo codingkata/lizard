@@ -18,7 +18,7 @@ def get_full_commit_list(repo_path, branch):
 
         commit_hash = parts[0]
         result.append({'commit_date': commit_date, 'commit_id': commit_hash})
-    print(len(result))
+    #print(f' Total number of commits: {len(result)}')
     return result
 
 def _take_elements_in_total(lst,steplength):
@@ -31,9 +31,13 @@ def _take_elements_in_total(lst,steplength):
             result.append(lst[-1])
         return result
 
-def get_commit_list(repo_path, branch,size):
+def get_commit_list(repo_path, branch,steplength):
     full_list=get_full_commit_list(repo_path, branch)
-    return _take_elements_in_total(full_list,size)
+    ret = _take_elements_in_total(full_list,steplength)
+    #print(f' Interval of commits : {steplength}')
+    #print(f' Number of commits picked: {len(ret)}')
+    return ret
+
 
 def checkout_commit(repo_path, commit_id):
     full_commit_id = subprocess.check_output(
